@@ -1,58 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- Заголовок экрана -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_tasks"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Мои задачи:"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Добавить задачу" />
 
-    <!-- Первая задача-заглушка -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/task_1"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="#EEEEEE" />
-
-    <!-- Вторая задача-заглушка -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/task_2"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="#EEEEEE" />
-
-    <!-- Третья задача-заглушка -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/task_3"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="#EEEEEE" />
-
-    <!-- Четвертая задача-заглушка -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/task_4"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="#EEEEEE" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
