@@ -1,11 +1,34 @@
 package ru.ilusha.mycalendar
 
-object TaskRepository {
-    val tasks: MutableList<Task> = mutableListOf(
-        Task(id = 1, title = "Купить продукты", description = "Молоко, хлеб", date = "10.10.2024", isDone = false),
-        Task(id = 2, title = "Сделать лабу", description = "По сетям", date = "11.10.2024", isDone = true),
-        Task(id = 3, title = "Позвонить", description = "Срочно", date = "12.10.2024", isDone = false)
-    )
+import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-    fun getById(id: Int): Task? = tasks.firstOrNull { it.id == id }
+class TaskRepository(context: Context) {
+
+    private val dao: TaskDao = AppDatabase.getInstance(context).taskDao()
+
+    suspend fun insert(task: Task) = withContext(Dispatchers.IO) {
+        dao.insert(task)
+    }
+
+    suspend fun update(task: Task) = withContext(Dispatchers.IO) {
+        dao.update(task)
+    }
+
+    suspend fun delete(task: Task) = withContext(Dispatchers.IO) {
+        dao.delete(task)
+    }
+
+    suspend fun getAll(): List<Task> = withContext(Dispatchers.IO) {
+        dao.getAll()
+    }
+
+    suspend fun getById(id: Int): Task? = withContext(Dispatchers.IO) {
+        dao.getById(id)
+    }
+
+    suspend fun getByDate(date: String): List<Task> = withContext(Dispatchers.IO) {
+        dao.getByDate(date)
+    }
 }
