@@ -12,26 +12,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dummyTasks = listOf(
-            Task(id = 1, title = "Купить продукты", description = "Молоко, хлеб", date = "10.10.2024", isDone = false),
-            Task(id = 2, title = "Сделать лабу", description = "По сетям", date = "11.10.2024", isDone = true),
-            Task(id = 3, title = "Позвонить", description = "Срочно", date = "12.10.2024", isDone = false)
-        )
-
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view_tasks)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val adapter = TaskAdapter(dummyTasks) { clickedTask ->
-            val intent = Intent(this, AddTaskActivity::class.java)
-            intent.putExtra("TASK_ID", clickedTask.id)
+        val adapter = TaskAdapter(TaskRepository.tasks) { clickedTask ->
+            val intent = Intent(this, TaskDetailActivity::class.java)
+            intent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, clickedTask.id)
             startActivity(intent)
         }
         recyclerView.adapter = adapter
 
         val fab: FloatingActionButton = findViewById(R.id.fab_add_task)
         fab.setOnClickListener {
-            val intent = Intent(this, AddTaskActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, AddTaskActivity::class.java))
         }
     }
 }
