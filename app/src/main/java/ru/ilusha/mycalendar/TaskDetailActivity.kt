@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
 class TaskDetailActivity : AppCompatActivity() {
 
-    private lateinit var repository: TaskRepository
-    private var currentTask: Task? = null
+    private val viewModel: TaskViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_detail)
-
-        repository = TaskRepository(applicationContext)
 
         val titleView = findViewById<TextView>(R.id.text_detail_title)
         val descView = findViewById<TextView>(R.id.text_detail_description)
@@ -28,31 +28,27 @@ class TaskDetailActivity : AppCompatActivity() {
         val taskId = intent.getIntExtra(EXTRA_TASK_ID, -1)
 
         lifecycleScope.launch {
-            val task = repository.getById(taskId)
-            currentTask = task
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.tasks.collect { tasks ->
+                    val task = tasks.find { it.id == taskId }
+                    if (task != null) {
+                        titleView.text = task.title
+                        descView.text = task.description
+                        dateView.text = "Дата: ${task.date} ${task.time}"
+                        doneView.isChecked = task.isDone
 
-            if (task == null) {
-                titleView.text = "Задача не найдена (ID=$taskId)"
-                descView.text = ""
-                dateView.text = ""
-                doneView.isEnabled = false
-                deleteBtn.isEnabled = false
-            } else {
-                titleView.text = task.title
-                descView.text = task.description
-                dateView.text = "Дата: ${task.date} ${task.time}"
-                doneView.isChecked = task.isDone
+                        // Отписываемся перед обновлением, чтобы не зациклить
+                        doneView.setOnCheckedChangeListener(null)
+                        doneView.isChecked = task.isDone
 
-                doneView.setOnCheckedChangeListener { _, isChecked ->
-                    lifecycleScope.launch {
-                        repository.update(task.copy(isDone = isChecked))
-                    }
-                }
+                        doneView.setOnCheckedChangeListener { _, isChecked ->
+                            viewModel.updateTask(task.copy(isDone = isChecked))
+                        }
 
-                deleteBtn.setOnClickListener {
-                    lifecycleScope.launch {
-                        repository.delete(task)
-                        finish()
+                        deleteBtn.setOnClickListener {
+                            viewModel.deleteTask(task)
+                            finish()
+                        }
                     }
                 }
             }

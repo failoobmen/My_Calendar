@@ -4,19 +4,16 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 
 class AddTaskActivity : AppCompatActivity() {
 
-    private lateinit var repository: TaskRepository
+    private val viewModel: TaskViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
-
-        repository = TaskRepository(applicationContext)
 
         val titleInput = findViewById<EditText>(R.id.edit_title)
         val descInput = findViewById<EditText>(R.id.edit_description)
@@ -35,19 +32,9 @@ class AddTaskActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            lifecycleScope.launch {
-                repository.insert(
-                    Task(
-                        title = title,
-                        description = description,
-                        date = date,
-                        time = time,
-                        isDone = false
-                    )
-                )
-                Toast.makeText(this@AddTaskActivity, "Задача добавлена", Toast.LENGTH_SHORT).show()
-                finish()
-            }
+            viewModel.addTask(title, description, date, time)
+            Toast.makeText(this, "Задача добавлена", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }
